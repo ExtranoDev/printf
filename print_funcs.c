@@ -61,3 +61,16 @@ int print_int(va_list arg)
 	}
 	return (cp);
 }
+
+/**
+ * print_bin - print binary representation of a num
+ * @arg: argument
+ * Return: Always 0
+ */
+int print_bin(va_list arg)
+{
+	unsigned int nump, num = va_arg(arg, unsigned int);
+	conv_to_bin(num, &nump);
+	conv_to_bin(num, &nump);
+}
+

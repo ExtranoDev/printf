@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include "main.h"
 
 /**
  * _putchar - output one byte of char

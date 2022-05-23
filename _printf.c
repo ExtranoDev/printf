@@ -16,9 +16,9 @@ int _printf(const char *format, ...)
 
 	for (n = 0; format[n]; n++)
 	{
-		if (format[i] != '%')
+		if (format[n] != '%')
 		{
-			_putchar(format[i]);
+			_putchar(format[n]);
 			count++;
 			continue;
 		}

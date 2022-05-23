@@ -11,16 +11,8 @@ int printID(char format1, va_list args)
 	int i;
 
 	structID ids[] = {
-		{'s', print_str},
-		{'d', print_int},
-		{'c', print_char},
-		{'i', print_int},
-		{'u', print_unsigned},
-		{'b', print_unsignedToBinary},
-		{'o', print_oct},
-		{'x', print_hex},
-		{'S', print_STR},
-		{'X', print_HEX},
+		{"s", print_str},
+		{"c", print_char},
 		{NULL, NULL}
 	};
 

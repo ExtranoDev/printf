@@ -70,7 +70,10 @@ int print_int(va_list arg)
 int print_bin(va_list arg)
 {
 	unsigned int nump, num = va_arg(arg, unsigned int);
+
 	conv_to_bin(num, &nump);
 	conv_to_bin(num, &nump);
+
+	return (nump);
 }
 

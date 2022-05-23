@@ -19,6 +19,7 @@ int printID(char format1, va_list args)
 		{NULL, NULL}
 	};
 
+	
 	for (i = 0; ids[i].ID != NULL; i++)
 	{
 		if (ids[i].ID[0] == format1)

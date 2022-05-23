@@ -43,6 +43,7 @@ int print_str(va_list arg)
 int print_int(va_list arg)
 {
 	unsigned int i, j = 1, cp = 0, temp;
+	
 	int num = va_arg(arg, int);
 
 	if (num < 0)

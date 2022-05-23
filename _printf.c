@@ -13,6 +13,8 @@ int _printf(const char *format, ...)
 	int count = 0, countID = 0;
 
 	va_start(args, format);
+	if (!format)
+		return (-1);
 
 	for (n = 0; format[n]; n++)
 	{

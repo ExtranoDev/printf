@@ -15,7 +15,7 @@ int printID(char format1, va_list args)
 		{"c", print_char},
 		{"d", print_int},
 		{"i", print_int},
-		{"d", print_bin},
+		{"b", print_bin},
 		{NULL, NULL}
 	};
 

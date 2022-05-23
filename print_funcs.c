@@ -21,7 +21,7 @@ int print_char(va_list arg)
 int print_str(va_list arg)
 {
 	int num;
-	char *str = va_arg(arg, char*);
+	char *str = va_arg(arg, char *);
 
 	if (!str)
 		str = "(null)";
@@ -32,4 +32,32 @@ int print_str(va_list arg)
 		_putchar(str[num]);
 
 	return (num);
+}
+
+/**
+ * print_int - prints number
+ * @arg: argument
+ *
+ * Return: number of char printed
+ */
+int print_int(va_list arg)
+{
+	unsigned int i, j = 1, cp = 0, temp;
+	int num = va_arg(arg, int);
+
+	if (num < 0)
+	{
+		_putchar('-');
+		cp++;
+		num *= -1;
+	}
+
+	for (i = 0; num / j > 9; i++, j *= 10)
+		;
+	for ( ; j >= 1; num %= j, j /= 10, cp++)
+	{
+		temp = num / j;
+		_putchar('0' + temp);
+	}
+	return (cp);
 }

@@ -8,6 +8,8 @@
 int _putchar(char s);
 int _printf(const char *format, ...);
 int printID(char format1, va_list args);
+int print_char(va_list arg);
+int print_str(va_list arg);
 
 typedef struct structID
 {

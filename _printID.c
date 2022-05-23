@@ -13,6 +13,8 @@ int printID(char format1, va_list args)
 	structID ids[] = {
 		{"s", print_str},
 		{"c", print_char},
+		{"d", print_int},
+		{"i", print_int},
 		{NULL, NULL}
 	};
 

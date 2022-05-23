@@ -25,6 +25,7 @@ int _printf(const char *format, ...)
 		if (format[n + 1] == '%')
 		{
 			_putchar('%');
+			n++;
 			count++;
 			continue;
 		}

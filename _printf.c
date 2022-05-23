@@ -3,6 +3,7 @@
 /**
  * _printf - prints formatted string
  * @format: formatted string
+ * Return: number of char printed
  * Description: function works on displaying formatted string appropriately
  */
 
@@ -13,10 +14,11 @@ int _printf(const char *format, ...)
 	int count = 0, countID = 0;
 
 	va_start(args, format);
+
 	if (!format)
 		return (-1);
 
-	for (n = 0; format[n]; n++)
+	for (n = 0; format[n] != '\0'; n++)
 	{
 		if (format[n] != '%')
 		{
@@ -33,6 +35,7 @@ int _printf(const char *format, ...)
 		}
 		if (format[n + 1] == '\0')
 			return (-1);
+
 		countID = printID(format[n + 1], args);
 		if (countID == -1 || countID != 0)
 			n++;

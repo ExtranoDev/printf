@@ -1,108 +1,132 @@
 #include "main.h"
 
 /**
- * print_bigS - Non printable characters
- * (0 < ASCII value < 32 or >= 127) are
- * printed this way: \x, followed by the ASCII code
- * value in hexadecimal (upper case - always 2 characters)
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
+ * print_char - prints character
+ * @ap: argument pointer
+ * @params: the parameters struct
+ * Return: number chars printed
  */
-int print_bigS(va_list l, flags_t *f)
+
+int print_char(va_list ap, params_t *params)
 {
-	int i, count = 0;
-	char *res;
-	char *s = va_arg(l, char *);
+	char pad_char = ' ';
+	unsigned int pad = 1, sum = 0, ch = va_arg(ap, int);
 
-	(void)f;
-	if (!s)
-		return (_puts("(null)"));
+	if (params->minus_flag)
+		sum += _putchar(ch);
+	while (pad++ < params->width)
+		sum += _putchar(pad_char);
+	if (!params->minus_flag)
+		sum += _putchar(ch);
+	return (sum);
+}
 
-	for (i = 0; s[i]; i++)
-	{
-		if (s[i] > 0 && (s[i] < 32 || s[i] >= 127))
+/**
+ * print_int - prints integer
+ * @ap: argument pointer
+ * @params: the parameters struct
+ * Return: number chars printed
+ */
+
+int print_int(va_list ap, params_t *params)
+{
+	long l;
+
+	if (params->l_modifier)
+		l = va_arg(ap, long);
+	else if (params->h_modifier)
+		l = (short int)va_arg(ap, int);
+	else
+		l = (int)va_arg(ap, int);
+	return (print_number(convert(l, 10, 0, params), params));
+}
+
+/**
+ * print_string - prints string
+ * @ap: argument pointer
+ * @params: the parameters struct
+ * Return: number chars printed
+ */
+
+int print_string(va_list ap, params_t *params)
+{
+	char *str = va_arg(ap, char *), pad_char = ' ';
+	unsigned int pad = 0, sum = 0, i = 0, j;
+
+	(void)params;
+	switch ((int)(!str))
+	case 1:
+		str = NULL_STRING;
+
+		j = pad = _strlen(str);
+		if (params->precision < pad)
+			j = pad = params->precision;
+
+		if (params->minus_flag)
 		{
-			_puts("\\x");
-			count += 2;
-			res = convert(s[i], 16, 0);
-			if (!res[1])
-				count += _putchar('0');
-			count += _puts(res);
+			if (params->precision != UINT_MAX)
+				for (i = 0; i < pad; i++)
+					sum += _putchar(*str++);
+			else
+				sum += _puts(str);
 		}
-		else
-			count += _putchar(s[i]);
-	}
-	return (count);
-}
-
-/**
- * print_rev - prints a string in reverse
- * @l: argument from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: length of the printed string
- */
-int print_rev(va_list l, flags_t *f)
-{
-	int i = 0, j;
-	char *s = va_arg(l, char *);
-
-	(void)f;
-	if (!s)
-		s = "(null)";
-
-	while (s[i])
-		i++;
-
-	for (j = i - 1; j >= 0; j--)
-		_putchar(s[j]);
-
-	return (i);
-}
-
-/**
- * print_rot13 - prints a string using rot13
- * @l: list of arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: length of the printed string
- */
-int print_rot13(va_list l, flags_t *f)
-{
-	int i, j;
-	char rot13[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	char ROT13[] = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
-	char *s = va_arg(l, char *);
-
-	(void)f;
-	for (j = 0; s[j]; j++)
-	{
-		if (s[j] < 'A' || (s[j] > 'Z' && s[j] < 'a') || s[j] > 'z')
-			_putchar(s[j]);
-		else
+		while (j++ < params->width)
+			sum += _putchar(pad_char);
+		if (!params->minus_flag)
 		{
-			for (i = 0; i <= 52; i++)
-			{
-				if (s[j] == rot13[i])
-					_putchar(ROT13[i]);
-			}
+			if (params->precision != UINT_MAX)
+				for (i = 0; i < pad; i++)
+					sum += _putchar(*str++);
+			else
+				sum += _puts(str);
 		}
-	}
-
-	return (j);
+		return (sum);
 }
 
 /**
- * print_percent - prints a percent
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags in which we turn the flags on
- * Return: number of char printed
+ * print_percent - prints string
+ * @ap: argument pointer
+ * @params: the parameters struct
+ * Return: number chars printed
  */
-int print_percent(va_list l, flags_t *f)
+
+int print_percent(va_list ap, params_t *params)
 {
-	(void)l;
-	(void)f;
+	(void)ap;
+	(void)params;
 	return (_putchar('%'));
+}
+
+/**
+ * print_S - custom format specifier
+ * @ap: argument pointer
+ * @params: the parameters struct
+ * Return: number chars printed
+ */
+
+int print_S(va_list ap, params_t *params)
+{
+	char *str = va_arg(ap, char *);
+	char *hex;
+	int sum = 0;
+
+	if ((int)(!str))
+		return (_puts(NULL_STRING));
+	for (; *str; str++)
+	{
+		if ((*str > 0 && *str < 32) || *str >= 127)
+		{
+			sum += _putchar('\\');
+			sum += _putchar('x');
+			hex = convert(*str, 16, 0, params);
+			if (!hex[1])
+				sum += _putchar('0');
+			sum += _puts(hex);
+		}
+		else
+		{
+			sum += _putchar(*str);
+		}
+	}
+	return (sum);
 }

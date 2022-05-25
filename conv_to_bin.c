@@ -8,7 +8,6 @@
 void conv_to_bin(unsigned int num, unsigned int *nump)
 
 {
-	
 	if (num > 1)
 	{
 		*nump += 1;

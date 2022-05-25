@@ -16,6 +16,11 @@ int printID(char format1, va_list args)
 		{"d", print_int},
 		{"i", print_int},
 		{"b", print_bin},
+		{"o", print_oct},
+		{"u", print_unsigned},
+		{"x", print_hex},
+		{"X", print_HEX},
+		{"S", print_STR},
 		{NULL, NULL}
 	};
 

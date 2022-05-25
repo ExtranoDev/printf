@@ -1,33 +1,97 @@
 #include "main.h"
 
 /**
- * printID - help prints character format
- * @format1: char after %
- * @args: arguement for the type of format
- * Return: count of char printed
+ * convert - converts number and base into string
+ * @num: input number
+ * @base: input base
+ * @lowercase: flag if hexa values need to be lowercase
+ * Return: result string
  */
-int printID(char format1, va_list args)
+char *convert(unsigned long int num, int base, int lowercase)
 {
-	int i;
+    static char *rep;
+    static char buffer[50];
+    char *ptr;
 
-	structID ids[] = {
-		{'s', print_str},
-		{'d', print_int},
-		{'c', print_char},
+    rep = (lowercase)
+? "0123456789abcdef"
+: "0123456789ABCDEF";
+    ptr = &buffer[49];
+    *ptr = '\0';
+    do
+    {
+        *--ptr = rep[num % base];
+        num /= base;
+    } while (num != 0);
+
+    return (ptr);
+}
+
+/**
+ * get_flag - turns on flags if _printf finds
+ * a flag modifier in the format string
+ * @s: character that holds the flag specifier
+ * @f: pointer to the struct flags in which we turn the flags on
+ *
+ * Return: 1 if a flag has been turned on, 0 otherwise
+ */
+int get_flag(char s, flags_t *f)
+{
+    int i = 0;
+
+    switch (s)
+    {
+    case '+':
+        f->plus = 1;
+        i = 1;
+        break;
+    case ' ':
+        f->space = 1;
+        i = 1;
+        break;
+    case '#':
+        f->hash = 1;
+        i = 1;
+        break;
+    }
+
+    return (i);
+}
+
+/**
+ * get_print - selects the right printing function
+ * depending on the conversion specifier passed to _printf
+ * @s: character that holds the conversion specifier
+ * Description: the function loops through the structs array
+ * func_arr[] to find a match between the specifier passed to _printf
+ * and the first element of the struct, and then the approriate
+ * printing function
+ * Return: a pointer to the matching printing function
+ */
+int (*get_print(char s))(va_list, flags_t *)
+{
+	ph func_arr[] = {
 		{'i', print_int},
+		{'s', print_string},
+		{'c', print_char},
+		{'d', print_int},
 		{'u', print_unsigned},
-		{'b', print_unsignedToBinary},
-		{'o', print_oct},
 		{'x', print_hex},
-		{'S', print_STR},
-		{'X', print_HEX},
-		{NULL, NULL}
-	};
+		{'X', print_hex_big},
+		{'b', print_binary},
+		{'o', print_octal},
+		{'R', print_rot13},
+		{'r', print_rev},
+		{'S', print_bigS},
+		{'p', print_address},
+		{'%', print_percent}
+		};
+	int flags = 14;
 
-	for (i = 0; ids[i].ID != NULL; i++)
-	{
-		if (ids[i].ID[0] == format1)
-			return (ids[i].outter(args));
-	}
-	return (0);
+	register int i;
+
+	for (i = 0; i < flags; i++)
+		if (func_arr[i].c == s)
+			return (func_arr[i].f);
+	return (NULL);
 }

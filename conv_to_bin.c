@@ -1,52 +1,40 @@
 #include "main.h"
 
 /**
- * print_binary - prints a number in base 2
- * @l: va_list arguments from _printf
- * @f: pointer to the struct that determines
- * if a flag is passed to _printf
- * Description: the function calls convert() which in turns converts the input
- * number into the correct base and returns it as a string
- * Return: the number of char printed
+ * print_binary - prints unsigned binary number
+ * @ap: the argument pointer
+ * @params: the parameters struct
+ *
+ * Return: bytes printed
  */
-int print_binary(va_list l, flags_t *f)
+int print_binary(va_list ap, params_t *params)
 {
-    unsigned int num = va_arg(l, unsigned int);
-    char *str = convert(num, 2, 0);
+	unsigned int n = va_arg(ap, unsigned int);
+	char *str = convert(n, 2, CONVERT_UNSIGNED, params);
+	int c = 0;
 
-    (void)f;
-    return (_puts(str));
+	if (params->hashtag_flag && n)
+		*--str = '0';
+	params->unsign = 1;
+	return (c += print_number(str, params));
 }
 
 /**
- * print_string - loops through a string and prints
- * every character
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
+ * print_unsigned - prints unsigned integer numbers
+ * @ap: argument pointer
+ * @params: the parameters struct
+ *
+ * Return: bytes printed
  */
-int print_string(va_list l, flags_t *f)
+int print_unsigned(va_list ap, params_t *params)
 {
-    char *s = va_arg(l, char *);
-
-    (void)f;
-
-    if (!s)
-        s = "(null)";
-    return (_puts(s));
-}
-
-/**
- * print_char - prints a character
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
- */
-int print_char(va_list l, flags_t *f)
-{
-    (void)f;
-    _putchar(va_arg(l, int));
-    return (1);
+	unsigned long l;
+	if (params->l_modifier)
+		l = (unsigned long)va_arg(ap, unsigned long);
+	else if (params->h_modifier)
+		l = (unsigned short int)va_arg(ap, unsigned int);
+	else
+		l = (unsigned int)va_arg(ap, unsigned int);
+	params->unsign = 1;
+	return (print_number(convert(l, 10, CONVERT_UNSIGNED, params), params));
 }

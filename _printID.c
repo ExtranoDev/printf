@@ -1,97 +1,117 @@
 #include "main.h"
 
 /**
- * convert - converts number and base into string
- * @num: input number
- * @base: input base
- * @lowercase: flag if hexa values need to be lowercase
- * Return: result string
+ * init_params - clears struct fields and reset buf
+ * @params: the parameters struct
+ * @ap: the argument pointer
+ * Return: void
  */
-char *convert(unsigned long int num, int base, int lowercase)
+
+void init_params(params_t *params, va_list ap)
 {
-    static char *rep;
-    static char buffer[50];
-    char *ptr;
+	params->unsign = 0;
 
-    rep = (lowercase)
-? "0123456789abcdef"
-: "0123456789ABCDEF";
-    ptr = &buffer[49];
-    *ptr = '\0';
-    do
-    {
-        *--ptr = rep[num % base];
-        num /= base;
-    } while (num != 0);
+	params->plus_flag = 0;
+	params->space_flag = 0;
+	params->hashtag_flag = 0;
+	params->zero_flag = 0;
+	params->minus_flag = 0;
 
-    return (ptr);
+	params->width = 0;
+	params->precision = UINT_MAX;
+
+	params->h_modifier = 0;
+	params->l_modifier = 0;
+	(void)ap;
 }
 
 /**
- * get_flag - turns on flags if _printf finds
- * a flag modifier in the format string
- * @s: character that holds the flag specifier
- * @f: pointer to the struct flags in which we turn the flags on
- *
- * Return: 1 if a flag has been turned on, 0 otherwise
+ * get_specifier - finds the format function
+ * @s: string of the format
+ * Return: the number of bytes printed
  */
-int get_flag(char s, flags_t *f)
+
+int (*get_specifier(char *s))(va_list ap, params_t *params)
+
 {
-    int i = 0;
+	specifier_t specifiers[] = {
+		{"c", print_char},
+		{"d", print_int},
+		{"i", print_int},
+		{"s", print_string},
+		{"%", print_percent},
+		{"b", print_binary},
+		{"o", print_octal},
+		{"u", print_unsigned},
+		{"x", print_hex},
+		{"X", print_HEX},
+		{"p", print_address},
+		{"S", print_S},
+		{"r", print_rev},
+		{"R", print_rot13},
+		{NULL, NULL}
+	};
 
-    switch (s)
-    {
-    case '+':
-        f->plus = 1;
-        i = 1;
-        break;
-    case ' ':
-        f->space = 1;
-        i = 1;
-        break;
-    case '#':
-        f->hash = 1;
-        i = 1;
-        break;
-    }
+	int i = 0;
 
-    return (i);
-}
-
-/**
- * get_print - selects the right printing function
- * depending on the conversion specifier passed to _printf
- * @s: character that holds the conversion specifier
- * Description: the function loops through the structs array
- * func_arr[] to find a match between the specifier passed to _printf
- * and the first element of the struct, and then the approriate
- * printing function
- * Return: a pointer to the matching printing function
- */
-int (*get_print(char s))(va_list, flags_t *)
-{
-	ph func_arr[] = {
-		{'i', print_int},
-		{'s', print_string},
-		{'c', print_char},
-		{'d', print_int},
-		{'u', print_unsigned},
-		{'x', print_hex},
-		{'X', print_hex_big},
-		{'b', print_binary},
-		{'o', print_octal},
-		{'R', print_rot13},
-		{'r', print_rev},
-		{'S', print_bigS},
-		{'p', print_address},
-		{'%', print_percent}
-		};
-	int flags = 14;
-
-	register int i;
-
-	for (i = 0; i < flags; i++)
-		if (func_arr[i].c == s)
-			return (func_arr[i].f);
+	while (specifiers[i].specifier)
+	{
+		if (*s == specifiers[i].specifier[0])
+		{
+			return (specifiers[i].f);
+		}
+		i++;
+	}
 	return (NULL);
+}
+
+/**
+ * get_modifier - finds the modifier function
+ * @s: string for format
+ * @params: parameter structure
+ * Return: if modifier was valid
+ */
+
+int get_modifier(char *s, params_t *params)
+{
+	int i = 0;
+
+	switch (*s)
+	{
+		case 'h':
+			i = params->h_modifier = 1;
+			break;
+		case 'l':
+			i = params->l_modifier = 1;
+			break;
+	}
+	return (i);
+}
+
+/**
+ * get_width - gets the width from the format string
+ * @s: the format string
+ * @params: the parameters struct
+ * @ap: the argument pointer
+ * Return: new pointer
+ */
+
+char *get_width(char *s, params_t *params, va_list ap)
+
+	/* should this function use char **s and modify the pointer? */
+{
+	int d = 0;
+
+	if (*s == '*')
+	{
+		d = va_arg(ap, int);
+		s++;
+	}
+	else
+	{
+		while (_isdigit(*s))
+			d = d * 10 + (*s++ - '0');
+	}
+	params->width = d;
+	return (s);
 }

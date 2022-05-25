@@ -1,79 +1,52 @@
 #include "main.h"
 
 /**
- * print_char - output char to stdout
- * @arg: argument
- *
- * Return: 1 on success else -1 with 
- * appropriate errno
- */
-int print_char(va_list arg)
-{
-	return (_putchar(va_arg(arg, int)));
-}
-
-/**
- * print_str - output a string to stdout
- * @arg: argument
- *
+ * print_string - loops through a string and prints
+ * every character
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct flags that determines
+ * if a flag is passed to _printf
  * Return: number of char printed
  */
-int print_str(va_list arg)
+int print_string(va_list l, flags_t *f)
 {
-	int num;
-	char *str = va_arg(arg, char *);
+    char *s = va_arg(l, char *);
 
-	if (!str)
-		str = "(null)";
-	else if (*str == '\0')
-		return (-1);
+    (void)f;
 
-	for (num = 0; str[num] != '\0'; num++)
-		_putchar(str[num]);
-
-	return (num);
+    if (!s)
+        s = "(null)";
+    return (_puts(s));
 }
 
 /**
- * print_int - prints number
- * @arg: argument
- *
+ * print_char - prints a character
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct flags that determines
+ * if a flag is passed to _printf
  * Return: number of char printed
  */
-int print_int(va_list arg)
+int print_char(va_list l, flags_t *f)
 {
-	unsigned int i, j = 1, cp = 0, temp;
-	
-	int num = va_arg(arg, int);
-
-	if (num < 0)
-	{
-		_putchar('-');
-		cp++;
-		num *= -1;
-	}
-
-	for (i = 0; num / j > 9; i++, j *= 10)
-		;
-	for ( ; j >= 1; num %= j, j /= 10, cp++)
-	{
-		temp = num / j;
-		_putchar('0' + temp);
-	}
-	return (cp);
+    (void)f;
+    _putchar(va_arg(l, int));
+    return (1);
 }
 
 /**
- * print_bin - print binary representation of a num
- * @arg: argument
- * Return: Always 0
+ * print_binary - prints a number in base 2
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct that determines
+ * if a flag is passed to _printf
+ * Description: the function calls convert() which in turns converts the input
+ * number into the correct base and returns it as a string
+ * Return: the number of char printed
  */
-int print_bin(va_list arg)
+int print_binary(va_list l, flags_t *f)
 {
-	unsigned int nump, num = va_arg(arg, unsigned int);
+    unsigned int num = va_arg(l, unsigned int);
+    char *str = convert(num, 2, 0);
 
-	conv_to_bin(num, &nump);
-
-	return (nump);
+    (void)f;
+    return (_puts(str));
 }
-

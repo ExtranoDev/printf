@@ -14,6 +14,7 @@ int print_int(va_list arg);
 int print_bin(va_list arg);
 void conv_to_bin(unsigned int num, unsigned int *nump);
 int print_unsigned(va_list arg);
+int print_oct(va_list arg);
 
 /**
  * struct structID - structure definition

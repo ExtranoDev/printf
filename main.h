@@ -14,7 +14,11 @@ int print_int(va_list arg);
 int print_bin(va_list arg);
 void conv_to_bin(unsigned int num, unsigned int *nump);
 
-
+/**
+ * struct structID - structure definition
+ * @ID: type
+ * @outter: function to print
+ */
 typedef struct structID
 {
 	char *ID;

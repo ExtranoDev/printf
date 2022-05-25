@@ -1,77 +1,37 @@
 #include "main.h"
 
-
-
 /**
-
- * print_bigS - Non printable characters
-
- * (0 < ASCII value < 32 or >= 127) are
-
- * printed this way: \x, followed by the ASCII code
-
- * value in hexadecimal (upper case - always 2 characters)
-
- * @l: va_list arguments from _printf
-
- * @f: pointer to the struct flags that determines
-
- * if a flag is passed to _printf
-
- * Return: number of char printed
-
+ * print_STR - prints a string with a `S` (upper case) specificer
+ * @arg: argument
+ * Return: number of character printed
  */
 
-int print_bigS(va_list l, flags_t *f)
-
+int print_STR(va_list arg)
 {
+int i;
+char *str = va_arg(arg, char*);
 
-	int i, count = 0;
+if (str == NULL)
+	str = "(null)";
+else if (*str == '\0')
+	return (-1);
 
-	char *res;
-
-	char *s = va_arg(l, char *);
-
-
-
-	(void)f;
-
-	if (!s)
-
-		return (_puts("(null)"));
-
-
-
-	for (i = 0; s[i]; i++)
-
+for (i = 0; str[i]; i++)
+{
+	if ((str[i] < 32 && str[i] > 0) || str[i] >= 127)
 	{
+		_putchar('\\');
+		_putchar('x');
+		if (i < 16)
+			_putchar('0');
 
-		if (s[i] > 0 && (s[i] < 32 || s[i] >= 127))
-
-		{
-
-			_puts("\\x");
-
-			count += 2;
-
-			res = convert(s[i], 16, 0);
-
-			if (!res[1])
-
-				count += _putchar('0');
-
-			count += _puts(res);
-
-		}
-
-		else
-
-			count += _putchar(s[i]);
-
+		print_unsignedIntToHex(str[i], 'A');
 	}
+	else
+		_putchar(str[i]);
+}
 
-	return (count);
-
+return (i);
 }
 
 

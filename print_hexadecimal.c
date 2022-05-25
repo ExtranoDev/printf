@@ -1,94 +1,44 @@
 #include "main.h"
 
-
-
 /**
-
- * print_hex - prints a number in hexadecimal base,
-
- * in lowercase
-
- * @l: va_list arguments from _printf
-
- * @f: pointer to the struct flags that determines
-
- * if a flag is passed to _printf
-
- * Description: the function calls convert() which in turns converts the input
-
- * number into the correct base and returns it as a string
-
- * Return: the number of char printed
-
+ * print_hex_base - base function for printing hexadecimal numbers
+ * @arg: argument list containing hexadecimal
+ * @_case: a  in caps on lower, printing the hex number in caps in lower
+ * Return: number of digits printed
  */
 
-int print_hex(va_list l, flags_t *f)
-
+int print_hex_base(va_list arg, char _case)
 {
+	unsigned int num = va_arg(arg, unsigned int);
+	int nbrCharacters;
 
-    unsigned int num = va_arg(l, unsigned int);
+	if (num == 0)
+		return (_putchar('0'));
+	nbrCharacters = print_unsignedIntToHex(num, _case);
 
-    char *str = convert(num, 16, 1);
-
-    int count = 0;
-
-
-
-    if (f->hash == 1 && str[0] != '0')
-
-        count += _puts("0x");
-
-    count += _puts(str);
-
-    return (count);
-
+	return (nbrCharacters);
 }
-
-
 
 /**
-
- * print_hex_big - prints a number in hexadecimal base,
-
- * in uppercase
-
- * @l: va_list arguments from _printf
-
- * @f: pointer to the struct that determines
-
- * if a flag is passed to _printf
-
- * Description: the function calls convert() which in turns converts the input
-
- * number into the correct base and returns it as a string
-
- * Return: the number of char printed
-
+ * print_hex - prints a hexadecimal in lower case
+ * @arg: list that contains hexadecimal to print
+ * Return: number of digits printed
  */
-
-int print_hex_big(va_list l, flags_t *f)
-
+int print_hex(va_list arg)
 {
-
-    unsigned int num = va_arg(l, unsigned int);
-
-    char *str = convert(num, 16, 0);
-
-    int count = 0;
-
-
-
-    if (f->hash == 1 && str[0] != '0')
-
-        count += _puts("0X");
-
-    count += _puts(str);
-
-    return (count);
-
+	return (print_hex_base(arg, 'a'));
 }
 
+/**
+ * print_HEX - prints a hexadecimal in upper case
+ * @arg: list that contains hexadecimal to print
+ * Return: number of digits printed
+ */
 
+int print_HEX(va_list arg)
+{
+	return (print_hex_base(arg, 'A'));
+}
 
 /**
  * print_oct - prints number in octal base.
